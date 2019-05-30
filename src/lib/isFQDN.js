@@ -5,6 +5,7 @@ const default_fqdn_options = {
   require_tld: true,
   allow_underscores: false,
   allow_trailing_dot: false,
+  ignore_max_length: false,
 };
 
 export default function isFQDN(str, options) {
@@ -16,9 +17,12 @@ export default function isFQDN(str, options) {
     str = str.substring(0, str.length - 1);
   }
   const parts = str.split('.');
-  for (let i = 0; i < parts.length; i++) {
-    if (parts[i].length > 63) {
-      return false;
+
+  if (!options.ignore_max_length) {
+    for (let i = 0; i < parts.length; i++) {
+      if (parts[i].length > 63) {
+        return false;
+      }
     }
   }
   if (options.require_tld) {

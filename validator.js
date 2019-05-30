@@ -196,7 +196,8 @@ function isByteLength(str, options) {
 var default_fqdn_options = {
   require_tld: true,
   allow_underscores: false,
-  allow_trailing_dot: false
+  allow_trailing_dot: false,
+  ignore_max_length: false
 };
 function isFQDN(str, options) {
   assertString(str);
@@ -209,9 +210,11 @@ function isFQDN(str, options) {
 
   var parts = str.split('.');
 
-  for (var i = 0; i < parts.length; i++) {
-    if (parts[i].length > 63) {
-      return false;
+  if (!options.ignore_max_length) {
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].length > 63) {
+        return false;
+      }
     }
   }
 
@@ -447,16 +450,20 @@ function isEmail(str, options) {
     }
   }
 
-  if (!isByteLength(user, {
+  if ((!isByteLength(user, {
     max: 64
   }) || !isByteLength(domain, {
     max: 254
-  })) {
+  })) && !options.ignore_max_length) {
     return false;
   }
 
+  var _options = options,
+      ignore_max_length = _options.ignore_max_length;
+
   if (!isFQDN(domain, {
-    require_tld: options.require_tld
+    require_tld: options.require_tld,
+    ignore_max_length: ignore_max_length
   })) {
     if (!options.allow_ip_domain) {
       return false;

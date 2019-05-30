@@ -118,12 +118,14 @@ export default function isEmail(str, options) {
     }
   }
 
-  if (!isByteLength(user, { max: 64 }) ||
-            !isByteLength(domain, { max: 254 })) {
+  if ((!isByteLength(user, { max: 64 }) ||
+            !isByteLength(domain, { max: 254 })) &&
+                  !options.ignore_max_length) {
     return false;
   }
 
-  if (!isFQDN(domain, { require_tld: options.require_tld })) {
+  const { ignore_max_length } = options;
+  if (!isFQDN(domain, { require_tld: options.require_tld, ignore_max_length })) {
     if (!options.allow_ip_domain) {
       return false;
     }

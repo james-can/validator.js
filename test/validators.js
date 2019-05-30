@@ -274,6 +274,18 @@ describe('Validators', () => {
     });
   });
 
+  it('should validate email with ignore_max_length option', () => {
+    test({
+      validator: 'isEmail',
+      args: [{ ignore_max_length: true }],
+      valid: [
+        `${repeat('a', 200)}@${repeat('a', 200)}.com`,
+        `${repeat('a', 64)}@${repeat('a', 63)}.com`,
+      ],
+      invalid: [''],
+    });
+  });
+
   it('should validate URLs', () => {
     test({
       validator: 'isURL',
